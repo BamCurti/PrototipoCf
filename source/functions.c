@@ -192,7 +192,7 @@ void llenarTaza(int Tempo){
 	//Apagar
 
 	timer(30, 1); //20 segundos reposo reposo anes de rellenar
-//	rellenarTanque();
+	rellenarTanque();
 
 	//otros 105 segundos
 	toogleTermoTaza; //prender termo a taza
