@@ -126,9 +126,9 @@ void timer (unsigned int tiempo, unsigned char largo){
 	TPM0->SC &= ~(TPM_SC_CMOD(1));//Apagar tiemer
 }
 void molerCafe (int TempMol, int motor){
-	ToogleSolenoide; //prender solenoide
+	prenderSolenoide; //prender solenoide
 	timer(1,1);
-	toogleMolino; //Prender molino
+	prenderMolino; //Prender molino
 	timer(8,1);
 
 	GPIOB->PSOR|=(1<<motor); //prender motor sabor
@@ -136,8 +136,8 @@ void molerCafe (int TempMol, int motor){
 	GPIOB->PCOR|=(1<<motor); //Apagar motor sabor
 
 	timer(20,1);
-	ToogleSolenoide;
-	toogleMolino; //Apagar molino
+	apagarSolenoide;
+	apagarMolino; //Apagar molino
 }
 void ADCTIMER (void){
 	ADC0->SC1[0]=ADC_SC1_ADCH(0) | ADC_SC1_AIEN_MASK;     //Activar pin PTE31 || Activar interrupcion
@@ -181,56 +181,55 @@ void moverSelector(unsigned short pasos, unsigned char Direccion){
 	}
 }
 void llenarTaza(int Tempo){
-	toogleTermoTaza; //prender
+
+	prenderTermoTaza; //prender
 	timer(25, 1); //11.5 segundos hechando agua
-	toogleBombaTermo; //prender
+	prenderBombaTermo; //prender
 
 	timer(15, 1); //otros 7.5 segundos
 
-	toogleTermoTaza; //Apagar
-	toogleBombaTermo; //Apagar
+	apagarTermoTaza; //Apagar
+	apagarBombaTermo; //Apagar
 	//Apagar
 
 	timer(30, 1); //20 segundos reposo reposo anes de rellenar
 	rellenarTanque();
 
 	//otros 105 segundos
-	toogleTermoTaza; //prender termo a taza
+	prenderTermoTaza; //prender termo a taza
 
 	for(int i = 1; i <= Tempo; i++){
 		timer(6, 1); //15 segundos hechando agua
-		toogleBombaTermo; //prender bomba a termo
+		prenderBombaTermo; //prender bomba a termo
 
 		timer(15, 1); //otros 5 segundos
-		toogleBombaTermo; //apagar bomba a termo
+		apagarBombaTermo; //apagar bomba a termo
 	}
 
 	timer(30, 1);	//ES EL UNICO A CORREGIR iempo que sigue hechandoagua pero no al tanque
-	toogleTermoTaza; //apagar termo a taza
+	apagarTermoTaza; //apagar termo a taza
 }
 void enjuague(short cycle){
 	printf("ENJUAGUE\n");
 	timer(2,1);
 
 	for(int i = 1; i <= cycle; i++){
-		toogleValvulaEnjuague; //prender enguaje
+		prenderValvulaEnjuague; //prender enguaje
 		timer(5 ,1);// 20 seg
-		toogleValvulaEnjuague; //apagar enguaje
+		apagarValvulaEnjuague; //apagar enguaje
 		timer(4 ,1); //reposo 60 seg
 	}
 }
 void tazaATope(int dir, int* posicion){
-	int sensorRiel = GPIO_ReadPinInput(GPIOE, 2); //Leer si llego a home
-
 	while(!sensorRiel){
 		printf("\r%d", *posicion);
-		sensorRiel = GPIO_ReadPinInput(GPIOE, 2); //lee entrada del sensor
 		moverTaza(1, dir, posicion); //puro parriba compa pepe
 	}
+
 	if(dir == ARRIBA)
 		*posicion = MAXPASOS;
 
-	printf("\nLimite ");
+	printf("\nLimite\n");
 }
 void calentarAgua(int *banderaADC, int *temperatura){
 	printf("CALENTAR AGUA\n");
@@ -289,11 +288,11 @@ void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaAD
 }
 void rellenarTanque(){
 	//llenar el tanque antes de usarlo
-	GPIOE->PSOR|=(1<<22); //bomba a termo
+	prenderBombaTermo;
 	while(!sensorTanque); //lee entrada del sensor
-	GPIOE->PCOR|=(1<<22);
+	apagarBombaTermo;
 
-	printf("Ya esta lleno carnal\n");
+	printf("Tanque lleno\n");
 }
 
 /*void PORTA_IRQHandler(void){

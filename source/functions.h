@@ -19,21 +19,30 @@
 enum direccion {ARRIBA, ABAJO};
 #define MAXPASOS 410
 
-#define ToogleSolenoide		GPIOB->PTOR |= (1<<10)
-#define toogleMolino 		GPIOB->PTOR|=(1<<0)
-#define toogleBombaTermo 	GPIOE->PTOR|=(1<<22) //bomba a termo
-#define prenderBombaTermo 	GPIOE->PSOR|=(1<<22) //bomba a termo
+#define apagarSolenoide 	GPIOB->PCOR |= (1<<10)
+#define prenderSolenoide 	GPIOB->PSOR |= (1<<10)
+
+#define apagarMolino 		GPIOB->PCOR|=(1<<0)
+#define prenderMolino 		GPIOB->PSOR|=(1<<0)
+
 #define apagarBombaTermo 	GPIOE->PCOR|=(1<<22) //bomba a termo
-#define toogleTermoTaza		GPIOC->PTOR|=(1<<2); //termo a taza
-#define toogleValvulaEnjuague	GPIOB->PTOR|=(1<<9); //prender enguaje
+#define prenderBombaTermo 	GPIOE->PSOR|=(1<<22) //bomba a termo
+
+#define apagarTermoTaza		GPIOC->PCOR|=(1<<2); //termo a taza
+#define prenderTermoTaza	GPIOC->PSOR|=(1<<2); //termo a taza
+
+#define apagarValvulaEnjuague	GPIOB->PCOR|=(1<<9); //prender enguaje
+#define prenderValvulaEnjuague	GPIOB->PSOR|=(1<<9); //prender enguaje
+
 #define prenderResistencia 	GPIOE->PSOR|=(1<<5); //prender resistencia
-#define apagarResistencia GPIOE->PCOR|=(1<<5);
+#define apagarResistencia 	GPIOE->PCOR|=(1<<5);
 
 #define aguaCaliente(bandera) (bandera & 4)
 #define tazaEnPresion(bandera) (bandera & 1)
 #define tanqueLleno(bandera) (bandera & 2)
 
 #define sensorTanque GPIO_ReadPinInput(GPIOB, 11)
+#define sensorRiel GPIO_ReadPinInput(GPIOE, 2)
 
 //FUNCIONES LISTAS
 void config();
