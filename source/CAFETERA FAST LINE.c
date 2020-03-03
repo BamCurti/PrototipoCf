@@ -25,13 +25,22 @@ int main(void) {
 
     config();
     printf("Ingrese cualquier numero para empezar programa: ");
-    scanf("%d", menu);
+    scanf("%d", &menu);
     tazaATope(ARRIBA, &posicionTaza);
     timer(1,1);
 
     while(true) {
-    	printf("1.- Programa principal 2.-Pruebas");
-    	scanf("%d", menu);
+    	printf("1.- Programa principal 2.-Pruebas\n");
+    	scanf("%d", &menu);
+    	if(menu == 1){
+    		//Ingrese proceso principal
+    	}
+
+    	else{
+    		printf("");
+    		scanf("%d", &menu);
+    	}
+
     }
 
     return 0;

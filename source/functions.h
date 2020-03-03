@@ -57,6 +57,10 @@ void llenarTaza(int Tempo); //Cambiar modos, para que sean dos funciones, o algo
 void enjuague(short cycle); //Tiempos definidos
 void tazaATope(int dir, int* posicion);	//Ver areas de mejora
 void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaADC);
+void leerTemperatura(int *banderaADC, int *temperatura);
+
+//prueba
+//void PORTC_IRQHandler(void);
 
 //FUNCIONES A MEJORAR
 void calentarAgua(); //Por interrupción

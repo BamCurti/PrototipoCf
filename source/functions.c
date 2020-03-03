@@ -40,6 +40,10 @@ void config(){
     GPIOA->PDDR &= (1<<9) || (1<<8) || (1<<5);
     EnableIRQ(PORTA_IRQn);
 
+    //prueba interrupcion
+//    PORTC->PCR[0] = 0x100 | PORT_PCR_IRQC(10);
+//    EnableIRQ(61);
+
     //Configurar puerto C en el pin 1 y 2 GPIO
     //ADC
     PORTE->PCR[20] = PORT_PCR_MUX(0);
@@ -102,7 +106,7 @@ void moverRodillo(){
 		timer(2,0);
 	}
 }
-void timer (unsigned int tiempo, unsigned char largo){
+void timer(unsigned int tiempo, unsigned char largo){
 	if(largo==0)TPM0->MOD = 120; //800 uS
 	else if(largo==1)TPM0->MOD = 62500; //500 mS
 	else if(largo==2)TPM0->MOD = 500; // 350 2.8 mS
@@ -125,7 +129,7 @@ void timer (unsigned int tiempo, unsigned char largo){
 
 	TPM0->SC &= ~(TPM_SC_CMOD(1));//Apagar tiemer
 }
-void molerCafe (int TempMol, int motor){
+void molerCafe(int TempMol, int motor){
 	prenderSolenoide; //prender solenoide
 	timer(1,1);
 	prenderMolino; //Prender molino
@@ -244,7 +248,7 @@ void calentarAgua(int *banderaADC, int *temperatura){
 		ADC0->SC1[0]=ADC_SC1_ADCH(31); //Desactivar ADC
 	} while(*temperatura >= 442);//442
 
-	printf("\nAgua lista");
+	printf("\nAgua lista\n");
 	apagarResistencia;
 }
 void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaADC){
@@ -267,12 +271,7 @@ void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaAD
 			bandera |= 2;
 
 			//calentar agua
-			*banderaADC = 0;
-			ADCTIMER();
-			while (!banderaADC);
-			printf("temperatura: %d\n",*temperatura);
-			*banderaADC = 0;
-			ADC0->SC1[0]=ADC_SC1_ADCH(31); //Desactivar ADC
+			leerTemperatura(banderaADC, temperatura);
 
 			if(*temperatura >= 442){
 				prenderResistencia;
@@ -302,4 +301,12 @@ void rellenarTanque(){
 	if (flags & (1<<8)) sabor = 2;
 	if (flags & (1<<5)) sabor = 3;
 }*/
+void leerTemperatura(int *banderaADC, int *temperatura){
+	*banderaADC = 0;
+	ADCTIMER();
+	while (!banderaADC);
+	printf("temperatura: %d\n",*temperatura);
+	*banderaADC = 0;
+	ADC0->SC1[0]=ADC_SC1_ADCH(31); //Desactivar ADC
 
+}
