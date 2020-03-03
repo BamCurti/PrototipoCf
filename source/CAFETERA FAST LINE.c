@@ -14,7 +14,7 @@
 void ADC0_IRQHandler(void);
 
 int menu;
-int banderaADC, temperaturaADC, posicionTaza = 0;
+int banderaADC = 0, temperaturaADC = 0, posicionTaza = 0;
 
 int main(void) {
 
@@ -24,28 +24,24 @@ int main(void) {
     BOARD_InitDebugConsole();
 
     config();
-    printf("Ingrese cualquier numero para empezar programa: ");
+    printf("\rIngrese cualquier numero para empezar programa: ");
     scanf("%d", &menu);
     tazaATope(ARRIBA, &posicionTaza);
     timer(1,1);
 
     while(true) {
-    	printf("1.- Programa principal 2.-Pruebas\n");
+    	printf("\r1.- Programa principal 2.-Condiciones 3.- calentar el agua 4.- echar agua\n\r");
     	scanf("%d", &menu);
+
     	if(menu == 1){
+    		leerTemperatura(&banderaADC, &temperaturaADC);
+    		printf("\rtemperatura: %d \n"
+    				"\rPosicion: %d\n", temperaturaADC, posicionTaza);
     		//Ingrese proceso principal
     	}
-
-    	else{
-    		printf("1.- Relleno de tanque");
-    		scanf("%d", &menu);
-    		switch(menu){
-    		case 1:
-    			prenderBombaTermo;
-    			break;
-    		}
-    	}
-
+    	if(menu == 2)	condicionesParaPrepararCafe(&posicionTaza, &temperaturaADC, &banderaADC);
+    	if(menu == 3)	calentarAgua(&banderaADC, &temperaturaADC);
+    	if(menu == 4)  	prenderTermoTaza;
     }
 
     return 0;

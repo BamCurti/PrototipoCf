@@ -243,7 +243,7 @@ void calentarAgua(int *banderaADC, int *temperatura){
 		*banderaADC = 0;
 		ADCTIMER();
 		while (!banderaADC);
-		printf("%d\n",*temperatura);
+		printf("temperatura: %d\n\r",*temperatura);
 		*banderaADC =0;
 		ADC0->SC1[0]=ADC_SC1_ADCH(31); //Desactivar ADC
 	} while(*temperatura >= 442);//442
@@ -253,8 +253,10 @@ void calentarAgua(int *banderaADC, int *temperatura){
 }
 void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaADC){
 	unsigned char bandera = 0; //1 para taza en presión, 2 para agua llena, 4 para agua caliente
-
+	char conteoParaLectura = 21;
 	while(!tazaEnPresion(bandera) || !tanqueLleno(bandera) || !aguaCaliente(bandera)){
+		printf("temperatura:%d\n\r"
+				"posicion:%d\n\r", *temperatura, *posicion);
 		//bajar pasos necesarios
 		if(*posicion != 0) //Si no se ha llegado al paso 0 o presión
 			moverTaza(1, ABAJO, posicion);
@@ -271,17 +273,24 @@ void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaAD
 			bandera |= 2;
 
 			//calentar agua
-			leerTemperatura(banderaADC, temperatura);
+			if(conteoParaLectura > 20){
+				conteoParaLectura = 1;
+				leerTemperatura(banderaADC, temperatura);
 
-			if(*temperatura >= 442){
-				prenderResistencia;
 			}
 
-			else{
+			conteoParaLectura++;
+
+			if(*temperatura < 442)
+			{
 				bandera |= 4;
 				apagarResistencia;
 			}
+
+			else
+				prenderResistencia;
 		}
+
 	}
 	printf("Condiciones listas\n");
 }
@@ -303,8 +312,6 @@ void leerTemperatura(int *banderaADC, int *temperatura){
 	*banderaADC = 0;
 	ADCTIMER();
 	while (!banderaADC);
-	printf("temperatura: %d\n",*temperatura);
 	*banderaADC = 0;
 	ADC0->SC1[0]=ADC_SC1_ADCH(31); //Desactivar ADC
-
 }
