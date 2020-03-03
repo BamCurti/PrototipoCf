@@ -37,8 +37,13 @@ int main(void) {
     	}
 
     	else{
-    		printf("");
+    		printf("1.- Relleno de tanque");
     		scanf("%d", &menu);
+    		switch(menu){
+    		case 1:
+    			prenderBombaTermo;
+    			break;
+    		}
     	}
 
     }
