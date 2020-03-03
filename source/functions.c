@@ -293,14 +293,12 @@ void rellenarTanque(){
 
 	printf("Tanque lleno\n");
 }
+void PORTC_IRQHandler(void){
+	long flags = PORTC->ISFR;
+	PORTC->ISFR |= 0xFFFFFFFF;
+	if (flags & (1<<0)) apagarBombaTermo;
 
-/*void PORTA_IRQHandler(void){
-	long flags = PORTA->ISFR;
-	PORTA->ISFR |= 0xFFFFFFFF;
-	if (flags & (1<<9)) sabor = 1;
-	if (flags & (1<<8)) sabor = 2;
-	if (flags & (1<<5)) sabor = 3;
-}*/
+}
 void leerTemperatura(int *banderaADC, int *temperatura){
 	*banderaADC = 0;
 	ADCTIMER();
