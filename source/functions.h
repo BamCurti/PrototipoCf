@@ -60,7 +60,7 @@ void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaAD
 void leerTemperatura(int *banderaADC, int *temperatura);
 
 //prueba
-//void PORTC_IRQHandler(void);
+void PORTC_IRQHandler(void);
 
 //FUNCIONES A MEJORAR
 void calentarAgua(); //Por interrupción

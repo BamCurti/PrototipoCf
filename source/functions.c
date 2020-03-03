@@ -41,8 +41,8 @@ void config(){
     EnableIRQ(PORTA_IRQn);
 
     //prueba interrupcion
-//    PORTC->PCR[0] = 0x100 | PORT_PCR_IRQC(10);
-//    EnableIRQ(61);
+    PORTC->PCR[0] = 0x100 | PORT_PCR_IRQC(10);
+    EnableIRQ(61);
 
     //Configurar puerto C en el pin 1 y 2 GPIO
     //ADC
