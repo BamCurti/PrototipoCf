@@ -40,10 +40,6 @@ void config(){
     GPIOA->PDDR &= (1<<9) || (1<<8) || (1<<5);
     EnableIRQ(PORTA_IRQn);
 
-    //prueba interrupcion
-    PORTC->PCR[0] = 0x100 | PORT_PCR_IRQC(10);
-    EnableIRQ(61);
-
     //Configurar puerto C en el pin 1 y 2 GPIO
     //ADC
     PORTE->PCR[20] = PORT_PCR_MUX(0);
@@ -305,7 +301,8 @@ void rellenarTanque(){
 void PORTC_IRQHandler(void){
 	long flags = PORTC->ISFR;
 	PORTC->ISFR |= 0xFFFFFFFF;
-	if (flags & (1<<0)) apagarBombaTermo;
+	if (flags & (1<<0)) //apagarBombaTermo;
+		printf("Si funciona la interrupcion\n\r");
 
 }
 void leerTemperatura(int *banderaADC, int *temperatura){
