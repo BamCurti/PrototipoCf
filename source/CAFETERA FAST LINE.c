@@ -44,7 +44,8 @@ int main(void) {
     		while(menu){
     			printf("1.-Moler café	2.-mover Rodillo	3.-Mover Taza\n\r"
     					"4.-Taza a tope	5.-Llenar Taza	6.-Enjuague\n\r"
-    					"7.- Leer temp	8.-Condiciones\n\r"
+    					"7.- Leer temp	8.-Condiciones	9.-Calentar agua\n\r"
+    					"10.- Rellenar tanque\n\r"
     					"0.- Salir\n\r");
     			scanf("%d", &menu);
 
@@ -86,6 +87,14 @@ int main(void) {
 
     			case 8:
     				condicionesParaPrepararCafe(&posicionTaza, &temperaturaADC, &banderaADC);
+    				break;
+
+    			case 9:
+    				calentarAgua(&banderaADC, &temperaturaADC);
+    				break;
+
+    			case 10:
+    				rellenarTanque();
     				break;
     			}
     		}
