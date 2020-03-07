@@ -101,6 +101,8 @@ void moverRodillo(){
 		GPIOE->PCOR|=(1<<4);
 		timer(2,0);
 	}
+	timer(1,1);
+
 }
 void timer(unsigned int tiempo, unsigned char largo){
 	if(largo==0)TPM0->MOD = 120; //800 uS
@@ -126,7 +128,7 @@ void timer(unsigned int tiempo, unsigned char largo){
 	TPM0->SC &= ~(TPM_SC_CMOD(1));//Apagar tiemer
 }
 void molerCafe(int TempMol, int motor){
-	prenderSolenoide; //prender solenoide
+//	prenderSolenoide; //prender solenoide
 	timer(1,1);
 	prenderMolino; //Prender molino
 	timer(8,1);
@@ -136,8 +138,10 @@ void molerCafe(int TempMol, int motor){
 	GPIOB->PCOR|=(1<<motor); //Apagar motor sabor
 
 	timer(20,1);
-	apagarSolenoide;
+//	apagarSolenoide;
 	apagarMolino; //Apagar molino
+	timer(1,1);
+
 }
 void ADCTIMER (void){
 	ADC0->SC1[0]=ADC_SC1_ADCH(0) | ADC_SC1_AIEN_MASK;     //Activar pin PTE31 || Activar interrupcion
@@ -165,6 +169,7 @@ void moverTaza(int pasos, unsigned char Direccion, int* posicion){
 		timer(1,3);
 
 	}
+
 }
 void moverSelector(unsigned short pasos, unsigned char Direccion){
 	int j;
@@ -208,6 +213,8 @@ void llenarTaza(int Tempo){
 
 	timer(30, 1);	//ES EL UNICO A CORREGIR iempo que sigue hechandoagua pero no al tanque
 	apagarTermoTaza; //apagar termo a taza
+	timer(1,1);
+
 }
 void enjuague(short cycle){
 	printf("ENJUAGUE\n");
@@ -230,6 +237,8 @@ void tazaATope(int dir, int* posicion){
 		*posicion = MAXPASOS;
 
 	printf("\nLimite\n");
+	timer(1,1);
+
 }
 void calentarAgua(int *banderaADC, int *temperatura){
 	printf("CALENTAR AGUA\n");
@@ -248,9 +257,22 @@ void calentarAgua(int *banderaADC, int *temperatura){
 	apagarResistencia;
 }
 void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaADC){
-	unsigned char bandera = 0; //1 para taza en presión, 2 para agua llena, 4 para agua caliente
-	char conteoParaLectura = 21;
-	while(!tazaEnPresion(bandera) || !tanqueLleno(bandera) || !aguaCaliente(bandera)){
+//	unsigned char bandera = 0; //1 para taza en presión, 2 para agua llena, 4 para agua caliente
+//	char conteoParaLectura = 21;
+
+	rellenarTanque();
+	prenderResistencia;
+	moverTaza(*posicion, ABAJO, posicion);
+	printf("Taza en presion\n\r");
+	leerTemperatura(banderaADC, temperatura);
+
+	while(*temperatura >= TEMPIDEAL){
+		leerTemperatura(banderaADC, temperatura);
+		printf("temperatura:%d\n\r", *temperatura);
+	}
+	apagarResistencia;
+
+	/*while(!tazaEnPresion(bandera) || !tanqueLleno(bandera) || !aguaCaliente(bandera)){
 		printf("temperatura:%d\n\r"
 				"posicion:%d\n\r", *temperatura, *posicion);
 		//bajar pasos necesarios
@@ -259,6 +281,7 @@ void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaAD
 
 		else
 			bandera |= 1;
+
 
 		//Llenar
 		if(!sensorTanque) //tanque no está lleno
@@ -287,7 +310,8 @@ void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaAD
 				prenderResistencia;
 		}
 
-	}
+	}*/
+	timer(1,1);
 	printf("Condiciones listas\n");
 }
 void rellenarTanque(){
@@ -296,7 +320,7 @@ void rellenarTanque(){
 	while(!sensorTanque); //lee entrada del sensor
 	apagarBombaTermo;
 
-	printf("Tanque lleno\n");
+	printf("Tanque lleno\n\r");
 }
 void PORTC_IRQHandler(void){
 	long flags = PORTC->ISFR;
@@ -311,4 +335,24 @@ void leerTemperatura(int *banderaADC, int *temperatura){
 	while (!banderaADC);
 	*banderaADC = 0;
 	ADC0->SC1[0]=ADC_SC1_ADCH(31); //Desactivar ADC
+}
+void tiempoDeGoteo(){
+	//El chiste de la función es dejar gotear agua y llenar tanque de limpieza
+	//total 155
+	prenderTanqueLimpieza;
+	timer(38,1);
+	apagarTanqueLimpieza;
+	printf("Se lleno el tanque de limpieza\n\r");
+
+
+	timer(1,1);
+	rellenarTanque(); //aprox 20
+	printf("Se lleno el tanque principal\n\r");
+
+
+	timer(1,1);
+	prenderResistencia;
+	timer(94, 1); //Ya se lleno el tanque de limpieza, esto es puro tiempo de goteo
+	printf("Se acabó el goteo\n\r");
+
 }

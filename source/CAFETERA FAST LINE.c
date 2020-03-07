@@ -25,21 +25,44 @@ int main(void) {
     BOARD_InitDebugConsole();
 
     config();
-    printf("\rIngrese cualquier numero para empezar programa: ");
+    printf("\rIngrese cualquier numero para empezar programa: \n\r");
     scanf("%d", &menu);
     tazaATope(ARRIBA, &posicionTaza);
     timer(1,1);
+//    condicionesParaPrepararCafe(&posicionTaza, &temperaturaADC, &banderaADC);
 
     while(true) {
+        leerTemperatura(&banderaADC, &temperaturaADC);
+        printf("temperatura: %d\n\r", temperaturaADC);
+//    	if(temperaturaADC > 442)	condicionesParaPrepararCafe(&posicionTaza, &temperaturaADC, &banderaADC);
     	printf("\r1.- Programa principal 2.-Pruebas:\n\r");
     	scanf("%d", &menu);
 
     	if(menu == 1){
-    		leerTemperatura(&banderaADC, &temperaturaADC);
-    		printf("\rtemperatura: %d \n"
-    				"\rPosicion: %d\n", temperaturaADC, posicionTaza);
     		//Ingrese proceso principal
+    		condicionesParaPrepararCafe(&posicionTaza, &temperaturaADC, &banderaADC);
+    		molerCafe(8, 3);
+    		llenarTaza(7);
+
+    		tiempoDeGoteo(); //Llenar tanques
+    		enjuague(1);
+
+    		//PRENDER RESISTENCIA
+    		timer(55, 1);
+    		tazaATope(ARRIBA, &posicionTaza);
+    		moverRodillo();
+    		moverTaza(410, ABAJO, &posicionTaza);
+    		enjuague(1);
+    		timer(32,1);
+    		moverTaza(35, ARRIBA, &posicionTaza);
+    		moverRodillo();
+    		moverTaza(35, ABAJO, &posicionTaza);
+
+    		//APAGAR RESISTENCIA
+    		apagarResistencia; //Se prende resistencia en tiempo de goteo
+    		printf("CAFE LISTO\n\r");
     	}
+
     	if(menu == 2)
     		while(menu){
     			printf("1.-Moler café	2.-mover Rodillo	3.-Mover Taza\n\r"

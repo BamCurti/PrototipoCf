@@ -18,6 +18,7 @@
 //DEFINICIONES
 enum direccion {ARRIBA, ABAJO};
 #define MAXPASOS 410
+#define TEMPIDEAL 442
 
 #define apagarSolenoide 	GPIOB->PCOR |= (1<<10)
 #define prenderSolenoide 	GPIOB->PSOR |= (1<<10)
@@ -36,6 +37,9 @@ enum direccion {ARRIBA, ABAJO};
 
 #define prenderResistencia 	GPIOE->PSOR|=(1<<5); //prender resistencia
 #define apagarResistencia 	GPIOE->PCOR|=(1<<5);
+
+#define prenderTanqueLimpieza 	GPIOC->PSOR|=(1<<1); //prender tanque de enguaje
+#define apagarTanqueLimpieza 	GPIOC->PCOR|=(1<<1); //prender tanque de enguaje
 
 #define aguaCaliente(bandera) (bandera & 4)
 #define tazaEnPresion(bandera) (bandera & 1)
@@ -58,6 +62,7 @@ void enjuague(short cycle); //Tiempos definidos
 void tazaATope(int dir, int* posicion);	//Ver areas de mejora
 void condicionesParaPrepararCafe(int *posicion, int *temperatura, int *banderaADC);
 void leerTemperatura(int *banderaADC, int *temperatura);
+void tiempoDeGoteo();
 
 //prueba
 void PORTC_IRQHandler(void);
